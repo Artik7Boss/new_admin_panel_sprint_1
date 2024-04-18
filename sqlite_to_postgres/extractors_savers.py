@@ -11,64 +11,89 @@ class SQLiteExtractor:
 
     def copy_from_film_work(self):
         cursor = self.connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM film_work;")
+        total_rows = cursor.fetchone()[0]
+
+        batch_size = total_rows // 10 
+
         cursor.execute("SELECT * FROM film_work;")
 
-        result = cursor.fetchall()
+        while True:
+            batch = cursor.fetchmany(batch_size)
+            if not batch:
+                break
 
-        films = [FilmWork(**dict(film_work)) for film_work in result]
-
-        return films
+            films = [FilmWork(**dict(film_work)) for film_work in batch]
+            yield films
 
     def copy_from_genre(self):
         cursor = self.connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM genre;")
+        total_rows = cursor.fetchone()[0]
+
+        batch_size = total_rows // 10 
+
         cursor.execute("SELECT * FROM genre;")
 
-        result = cursor.fetchall()
+        while True:
+            batch = cursor.fetchmany(batch_size)
+            if not batch:
+                break
 
-        genres = [Genre(**dict(genre)) for genre in result]
-
-        return genres
+            genres = [Genre(**dict(genre)) for genre in batch]
+            yield genres
 
     def copy_from_person(self):
         cursor = self.connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM person;")
+        total_rows = cursor.fetchone()[0]
+
+        batch_size = total_rows // 10 
+
         cursor.execute("SELECT * FROM person;")
 
-        result = cursor.fetchall()
+        while True:
+            batch = cursor.fetchmany(batch_size)
+            if not batch:
+                break
 
-        persons = [Person(**dict(person)) for person in result]
-
-        return persons
+            persons = [Person(**dict(person)) for person in batch]
+            yield persons
 
     def copy_from_genre_film_work(self):
         cursor = self.connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM genre_film_work;")
+        total_rows = cursor.fetchone()[0]
+
+        batch_size = total_rows // 10 
+
         cursor.execute("SELECT * FROM genre_film_work;")
 
-        result = cursor.fetchall()
+        while True:
+            batch = cursor.fetchmany(batch_size)
+            if not batch:
+                break
 
-        genre_film_works = [
-            GenreFilmwork(**dict(genre_film_work)) for genre_film_work in result
-        ]
+            genre_film_works = [GenreFilmwork(**dict(genre_film_work)) for genre_film_work in batch]
 
-        return genre_film_works
+            yield genre_film_works
 
     def copy_from_person_film_work(self):
         cursor = self.connection.cursor()
+        cursor.execute("SELECT COUNT(*) FROM person_film_work;")
+        total_rows = cursor.fetchone()[0]
+
+        batch_size = total_rows // 10
         cursor.execute("SELECT * FROM person_film_work;")
 
-        result = cursor.fetchall()
+        while True:
+            batch = cursor.fetchmany(batch_size)
+            if not batch:
+                break
 
-        person_film_works = [
-            PersonFilmwork(
-                **{
-                    key: value
-                    for key, value in dict(person_film_work).items()
-                    if key != "id"
-                }
-            )
-            for person_film_work in result
-        ]
+            person_film_works = [PersonFilmwork(**{key: value for key, value in dict(person_film_work).items() if key != "id"}) for person_film_work in batch]
 
-        return person_film_works
+            yield person_film_works
 
     def extract_all(self):
         films = self.copy_from_film_work()

@@ -23,7 +23,7 @@ class UUIDMixin(models.Model):
 class Filmwork(UUIDMixin, TimeStampedMixin):
 
     title = models.TextField(_('title'))
-    description = models.TextField(_('description'), blank=True, null=True)
+    description = models.TextField(_('description'), blank=True)
     creation_date = models.DateField(_('creation date'), blank=True, null=True)
     rating = models.FloatField(_('rating'), blank=True, null=True,
                                validators=[MinValueValidator(0),
@@ -33,8 +33,8 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
 
     class Meta:
         db_table = "content\".\"film_work"
-        verbose_name = 'Фильм'
-        verbose_name_plural = 'Фильмы'
+        verbose_name = _('Film')
+        verbose_name_plural = _('Films')
 
 
 class Genre(UUIDMixin, TimeStampedMixin):
@@ -45,8 +45,8 @@ class Genre(UUIDMixin, TimeStampedMixin):
 
     class Meta:
         db_table = "content\".\"genre"
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры' 
+        verbose_name = _('Genre')
+        verbose_name_plural = _('Genres') 
 
 
 class Person(UUIDMixin, TimeStampedMixin):
@@ -55,8 +55,8 @@ class Person(UUIDMixin, TimeStampedMixin):
 
     class Meta:
         db_table = "content\".\"person"
-        verbose_name = 'Персонаж'
-        verbose_name_plural = 'Персонажи' 
+        verbose_name = _('Person')
+        verbose_name_plural = _('Persons') 
 
 
 class GenreFilmWork(UUIDMixin, TimeStampedMixin):
@@ -67,8 +67,8 @@ class GenreFilmWork(UUIDMixin, TimeStampedMixin):
     class Meta:
         db_table = "content\".\"genre_film_work"
         unique_together = (('film_work', 'genre'),)
-        verbose_name = 'Жанр-Фильм'
-        verbose_name_plural = 'Жанры-Фильмы'
+        verbose_name = _('Genre-Film')
+        verbose_name_plural = _('Genre-Films')
 
 
 class PersonFilmWork(UUIDMixin, TimeStampedMixin):
@@ -80,5 +80,5 @@ class PersonFilmWork(UUIDMixin, TimeStampedMixin):
     class Meta:
         db_table = "content\".\"person_film_work"
         unique_together = (('film_work', 'person'),)
-        verbose_name = 'Персонаж-Фильм'
-        verbose_name_plural = 'Персонажи-Фильмы'
+        verbose_name = _('Person-Film')
+        verbose_name_plural = _('Person-Films')

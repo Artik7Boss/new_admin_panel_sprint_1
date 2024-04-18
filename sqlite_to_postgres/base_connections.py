@@ -1,13 +1,20 @@
-import psycopg2
-import sqlite3
-from psycopg2.extras import DictCursor
-from contextlib import contextmanager
+import logging
 import os
+import sqlite3
+from contextlib import contextmanager
+
+import psycopg2
+from psycopg2.extras import DictCursor
 
 from load_data import main
 
 sqlite_db_path = os.environ.get('DB_PATH')
 
+logging.basicConfig(
+    level=logging.ERROR,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="error.log"
+)
 
 dsn = {
     'dbname': os.environ.get('DB_NAME'),
@@ -37,7 +44,7 @@ def set_connections():
         ) as pg_conn:
             main(sqlite_conn, pg_conn)
     except (sqlite3.Error, psycopg2.Error) as _e:
-        print("\nОшибка:", _e)
+        logging.error("\nОшибка: %s", _e)
     finally:
         if pg_conn is not None:
             pg_conn.close()

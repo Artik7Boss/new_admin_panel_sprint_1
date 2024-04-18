@@ -33,8 +33,8 @@ CREATE TABLE IF NOT EXISTS content.genre_film_work (
     id uuid PRIMARY KEY,
     film_work_id uuid NOT NULL,
     genre_id uuid NOT NULL,
-    FOREIGN KEY (film_work_id) REFERENCES content.film_work(id),
-    FOREIGN KEY (genre_id) REFERENCES content.genre(id),
+    FOREIGN KEY (film_work_id) REFERENCES content.film_work(id) ON DELETE CASCADE,
+    FOREIGN KEY (genre_id) REFERENCES content.genre(id) ON DELETE CASCADE,
     created timestamp with time zone,
     modified timestamp with time zone
 );
@@ -51,11 +51,9 @@ CREATE TABLE IF NOT EXISTS content.person_film_work (
 );
 
 CREATE INDEX IF NOT EXISTS idx_title ON content.film_work (title);
-CREATE INDEX IF NOT EXISTS idx_name ON content.genre (name);
 CREATE INDEX IF NOT EXISTS idx_full_name ON content.person (full_name);
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_film_work_genre ON content.genre_film_work (film_work_id, genre_id);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_film_work_person ON content.person_film_work (film_work_id, person_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_film_work_person ON content.person_film_work (film_work_id, person_id, role);
 
 ALTER TABLE content.genre ADD CONSTRAINT uk_name UNIQUE (name);
-ALTER TABLE content.person ADD CONSTRAINT uk_full_name UNIQUE (full_name);
